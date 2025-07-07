@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const ROWS = 6;
 const COLS = 9;
+const CELL_SIZE = 48;
+const HALF_CELL = CELL_SIZE / 2;
 
 const directions = [
     [-1, 0],
@@ -237,13 +239,38 @@ export default function ChainReactionGame() {
                             }`}
                         >
                             {cell && (
-                                <div
-                                    className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm"
-                                    style={{
-                                        backgroundColor: players[cell.player],
-                                    }}
-                                >
-                                    {cell.count}
+                                <div className="flex flex-wrap justify-center items-center gap-0.5 w-full h-full">
+                                    <AnimatePresence initial={false}>
+                                        {Array.from({ length: cell.count }).map(
+                                            (_, i) => (
+                                                <motion.div
+                                                    key={`${r}-${c}-orb-${i}-${cell.player}`} // unique per player + orb count
+                                                    className="w-2.5 h-2.5 rounded-full"
+                                                    style={{
+                                                        backgroundColor:
+                                                            players[
+                                                                cell.player
+                                                            ],
+                                                    }}
+                                                    initial={{
+                                                        scale: 0,
+                                                        opacity: 0,
+                                                    }}
+                                                    animate={{
+                                                        scale: 1,
+                                                        opacity: 1,
+                                                    }}
+                                                    exit={{
+                                                        scale: 0,
+                                                        opacity: 0,
+                                                    }}
+                                                    transition={{
+                                                        duration: 0.2,
+                                                    }}
+                                                />
+                                            )
+                                        )}
+                                    </AnimatePresence>
                                 </div>
                             )}
                         </div>
@@ -260,14 +287,14 @@ export default function ChainReactionGame() {
                         return (
                             <motion.div
                                 key={key}
-                                initial={{ x: 0, y: 0, scale: 1 }}
-                                animate={{ x: xOffset, y: yOffset, scale: 1.2 }}
-                                exit={{ opacity: 0 }}
-                                transition={{ duration: 0.35, ease: "easeOut" }}
+                                initial={{ x: 0, y: 0 }}
+                                animate={{ x: xOffset, y: yOffset }}
+                                transition={{ duration: 0.3, ease: "easeOut" }}
                                 className="absolute w-4 h-4 rounded-full pointer-events-none z-50"
                                 style={{
-                                    top: fx * 48 + 12,
-                                    left: fy * 48 + 12,
+                                    top: fx * 48 + 24,
+                                    left: fy * 48 + 24,
+                                    transform: "translate(-50%, -50%)",
                                     backgroundColor: players[player],
                                 }}
                             />
